@@ -1466,17 +1466,18 @@ const getZPayCode = async (payMathod: string = 'alipay') => {
     order.sign = getPaySign(order, zPaySignKey)
     console.log('order----', order)
     // formData post
-    const formData = new FormData()
-    formData.append('pid', zPayMchId)
-    formData.append('type', payMathod)
-    formData.append('out_trade_no', payOrderNo.value)
-    formData.append('notify_url', 'https://juejin.cn/')
-    formData.append('name', 'VIP会员')
-    formData.append('money', money.toString())
-    formData.append('clientip', '192.168.1.100')
-    formData.append('sign_type', 'MD5')
-    formData.append('sign', getPaySign(formData, zPaySignKey))
-    const response: any = await payApi.getZPayCode2(formData)
+    // const formData = new FormData()
+    // formData.append('pid', zPayMchId)
+    // formData.append('type', payMathod)
+    // formData.append('out_trade_no', payOrderNo.value)
+    // formData.append('notify_url', 'https://juejin.cn/')
+    // formData.append('name', 'VIP会员')
+    // formData.append('money', money.toString())
+    // formData.append('clientip', '192.168.1.100')
+    // formData.append('sign_type', 'MD5')
+    // formData.append('sign', getPaySign(formData, zPaySignKey))
+    // const response: any = await payApi.getZPayCode2(formData)
+    const response: any = await payApi.getZPayCode(order)
     console.log('response----', response)
     if (response.status === 200 && response.data.code === 1) {
         dialogVisible.value = true
@@ -1502,13 +1503,10 @@ const checkZPayStatus = async () => {
     }
     const response: any = await payApi.checkZPayStatus(order)
     console.log('response----', response)
-    if (response.status === 200 && response.data.code === 1) {
-        const { status } = response.data.data
-        if (status === '1') {
-            oneMessage.success('支付成功')
-        } else {
-            oneMessage.error('支付失败')
-        }
+    if (response.status === 200 && response.data.status === 1) {
+        oneMessage.success('支付成功')
+    } else {
+        oneMessage.error('支付失败')
     }
 }
 
